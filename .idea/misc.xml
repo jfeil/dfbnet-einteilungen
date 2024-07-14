@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Black">
+    <option name="sdkName" value="Python 3.11.0 WSL (Ubuntu): (/home/jfeil/.pyenv/versions/3.11.0/envs/nlz-search/bin/python3.11)" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11.0 WSL (Ubuntu): (/home/jfeil/.pyenv/versions/3.11.0/envs/nlz-search/bin/python3.11)" project-jdk-type="Python SDK" />
+  <component name="ProjectUserFactors">
+    <factor id="completionFinishedType">
+      <dailyData date="27-05-2024">
+        <observation name="explicitSelect" value="1,0" />
+      </dailyData>
+    </factor>
+    <factor id="completionType">
+      <dailyData date="27-05-2024">
+        <observation name="BASIC" value="1,0" />
+      </dailyData>
+    </factor>
+    <factor id="completionUsage">
+      <dailyData date="27-05-2024">
+        <observation name="count" value="1,0" />
+      </dailyData>
+    </factor>
+    <factor id="fullLineFactors" />
+    <factor id="itemPosition">
+      <dailyData date="27-05-2024">
+        <observation name="0" value="1,0" />
+      </dailyData>
+    </factor>
+    <factor id="mnemonicsUsage">
+      <dailyData date="27-05-2024">
+        <observation name="total" value="1,0" />
+        <observation name="withMnemonics" value="0,0" />
+      </dailyData>
+    </factor>
+    <factor id="prefixLength">
+      <dailyData date="27-05-2024">
+        <observation name="24" value="1,0" />
+      </dailyData>
+    </factor>
+    <factor id="prefixMatchingType" />
+    <factor id="templatesUsage">
+      <dailyData date="27-05-2024">
+        <observation name="totalStartingWithPrefix" value="1,0" />
+      </dailyData>
+    </factor>
+    <factor id="timeBetweenTyping">
+      <dailyData date="27-05-2024">
+        <observation name="average" value="358,5" />
+        <observation name="count" value="2,0" />
+      </dailyData>
+    </factor>
+  </component>
+</project>
