@@ -1,13 +1,16 @@
 import dash
 from dash import Dash
 import dash_bootstrap_components as dbc
+import flask
 
 from dash_auth import BasicAuth
 
 from src.utils import grouped_users, single_users, config
 
+server = flask.Flask(__name__)  # define flask app.server
 dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
-app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.DARKLY, dbc_css])
+app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY, dbc_css], server=server, use_pages=True)
+
 USER_PWD = {
     config["auth"]["username"]: config["auth"]["password"],
 }

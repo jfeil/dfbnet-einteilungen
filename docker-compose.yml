@@ -1,0 +1,17 @@
+services:
+  nlz:
+    build: .
+    volumes:
+      - ./config.json:/workdir/config.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nlz.rule=Host(`nlz.jfeil.de`)"
+      - "traefik.http.routers.nlz.entrypoints=web"
+      - "traefik.http.routers.nlz.middlewares=https-redirect@file"
+      - "traefik.http.routers.nlz_tls.rule=Host(`nlz.jfeil.de`)"
+      - "traefik.http.routers.nlz_tls.tls.certresolver=letsencrypt_http"
+      - "traefik.http.routers.nlz_tls.entrypoints=websecure"
+      - "traefik.http.routers.nlz_tls.tls=true"
+      - "traefik.http.services.nlz.loadbalancer.server.port=8080"
+    restart: always
+    
