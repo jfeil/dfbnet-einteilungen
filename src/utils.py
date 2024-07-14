@@ -18,7 +18,7 @@ base_url = "https://www.dfbnet.org"
 dfbnet_login = "https://www.dfbnet.org/spielplus/oauth/login?submit=Anmelden"
 search = "https://www.dfbnet.org/sria/mod_sria/offenespielelist.do?reqCode=view"
 
-with open('../config.json', 'r') as f:
+with open('config.json', 'r') as f:
     config = json.load(f)
 
 grouped_users = {group_name: url_builder(config['grouped_users'][group_name]) for group_name in config['grouped_users']}
