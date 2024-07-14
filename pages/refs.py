@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple
 import dash
 from dash import html, callback, Output, Input
 
-from utils import prepare_search_session, search_ref, Match, ref_whitelist, config
+from src.utils import prepare_search_session, search_ref, Match, ref_whitelist, config
 import dash_ag_grid as dag
 import pandas as pd
 
