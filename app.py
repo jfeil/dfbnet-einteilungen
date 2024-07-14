@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 
 from dash_auth import BasicAuth
 
-from utils import grouped_users, single_users, config
+from src.utils import grouped_users, single_users, config
 
 dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
 app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.DARKLY, dbc_css])
