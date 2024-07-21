@@ -47,7 +47,7 @@ def create_ag_grids(data: Dict[Tuple[str, str] | date, List[Match]]):
         return html.Div(dag.AgGrid(
             rowData=df.to_dict("records"),
             columnDefs=columnDefs,
-            dashGridOptions={"domLayout": "autoHeight"},
+            dashGridOptions={"domLayout": "autoHeight", "enableCellTextSelection": True, "ensureDomOrder": True},
             columnSize="responsiveSizeToFit",
         ), className="dbc dbc-ag-grid")
 
