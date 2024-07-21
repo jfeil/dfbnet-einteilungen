@@ -4,7 +4,30 @@ from typing import List
 from urllib.parse import urljoin
 
 import requests
+from argon2 import PasswordHasher
 from bs4 import BeautifulSoup
+
+
+with open('config.json', 'r') as f:
+    config = json.load(f)
+
+hasher = PasswordHasher()
+
+
+def update_config():
+    with open('config.json', 'w') as f:
+        json.dump(config, f)
+
+
+def get_password_hash_for_user(username: str) -> str:
+    if username not in config["auth"]:
+        return ""
+    return config["auth"][username]["password"]
+
+
+def set_password_hash_for_user(user: str, pw_hash: str) -> None:
+    config["auth"][user]["password"] = pw_hash
+    update_config()
 
 
 def url_builder(users: List[List[str]], prefix="refs") -> str:
@@ -18,13 +41,23 @@ base_url = "https://www.dfbnet.org"
 dfbnet_login = "https://www.dfbnet.org/spielplus/oauth/login?submit=Anmelden"
 search = "https://www.dfbnet.org/sria/mod_sria/offenespielelist.do?reqCode=view"
 
-with open('config.json', 'r') as f:
-    config = json.load(f)
 
-grouped_users = {group_name: url_builder(config['grouped_users'][group_name]) for group_name in config['grouped_users']}
-single_users = {f"{user[0]} {user[1]}": url_builder([user]) for user in config['single_users']}
-ref_whitelist = [xs for x in config['grouped_users'].values() for xs in x] + config['single_users']
+def get_grouped_users(user_groups):
+    group_links = {}  # name: list_of_users
+    for key in config["grouped_users"]:
+        if config["grouped_users"][key]["group"] not in user_groups:
+            continue
+        group_links[key] = config['grouped_users'][key]["users"]
+    return group_links
 
+
+def get_single_users(user_groups):
+    single_user_links = []  # list_of_users
+    for group in user_groups:
+        if not isinstance(group, list) and len(group) != 2:
+            continue
+        single_user_links += [group]
+    return single_user_links
 
 def get_ref_req(vorname, nachname, datedelta):
     return {"staffel": "", "msa_id": "0", "status": "4", "date": datetime.today().strftime("%d.%m.%Y"),

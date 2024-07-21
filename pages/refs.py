@@ -4,8 +4,9 @@ from typing import Dict, List, Tuple
 
 import dash
 from dash import html, callback, Output, Input
+from dash_auth import protected_callback, list_groups
 
-from src.utils import prepare_search_session, search_ref, Match, ref_whitelist, config
+from src.utils import prepare_search_session, search_ref, Match, config, get_grouped_users, get_single_users
 import dash_ag_grid as dag
 import pandas as pd
 
@@ -80,6 +81,11 @@ def layout(refs=None):
         refs = [refs]
     refs_temp = [ref.split("_") for ref in refs]
     valid_refs = []
+    user_groups = list_groups()
+    ref_whitelist = []
+    for value in get_grouped_users(user_groups).values():
+        ref_whitelist += value
+    ref_whitelist += get_single_users(user_groups)
     for ref in refs_temp:
         if ref in ref_whitelist:
             valid_refs += [ref]
@@ -112,7 +118,7 @@ def layout(refs=None):
     ])
 
 
-@callback(
+@protected_callback(
     Output('tables-name', 'hidden'),
     Output('tables-date', 'hidden'),
     Input('mode-switch', 'value')
