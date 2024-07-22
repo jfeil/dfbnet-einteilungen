@@ -11,7 +11,6 @@ layout = dbc.Container([])
         Output('url_name', 'pathname'),
         Input('url_name', 'pathname'))
 def login(current_url):
-    print(current_url)
     if current_url == "/login":
         return "/"
     return dash.no_update
