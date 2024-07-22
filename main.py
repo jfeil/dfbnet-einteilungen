@@ -59,12 +59,10 @@ def layout():
             dbc.NavItem(dbc.NavLink(f"Registrieren", href="/hash"))
         ]
     else:
-        group_links = [dbc.NavItem(dbc.NavLink(f"{key}", href="/refs" + url_builder(value)))
-                       for key, value in get_grouped_users(user_groups).items()]
-
-        single_user_links = [dbc.NavItem(dbc.NavLink(f"{group[1]} {group[0]}", href="/refs" + url_builder([group])))
-                             for group in get_single_users(user_groups)]
-
+        links = ([dbc.NavItem(dbc.NavLink(f"{key}", href="/refs" + url_builder(value)))
+                  for key, value in get_grouped_users(user_groups).items()] +
+                 [dbc.NavItem(dbc.NavLink(f"{group[1]} {group[0]}", href="/refs" + url_builder([group])))
+                  for group in get_single_users(user_groups)])
 
         children = [
             dbc.Switch(
@@ -73,15 +71,15 @@ def layout():
                 value=False,
 
             ),
-            *group_links,
+            *links[:min(3, len(links))],
         ]
 
-        if single_user_links:
+        if len(links) > 3:
             children += [
                 dbc.DropdownMenu(
                     children=[
                         dbc.DropdownMenuItem("Mehr", header=True),
-                        *single_user_links
+                        *links[3:]
                     ],
                     nav=True,
                     in_navbar=True,
