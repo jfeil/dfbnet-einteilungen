@@ -73,9 +73,9 @@ def search_link(web_content, keyword):
 
 class Ref:
     def __init__(self, ref_args: List[str]):
-        self.role = ref_args[0]
-        self.name = ref_args[1]
-        self.state = ref_args[2]
+        self.role = ref_args[0][0]
+        self.name = ref_args[0][1]
+        self.state = ref_args[1]
 
     def __repr__(self):
         return f"{self.role}: {self.name} ({self.state})"
@@ -109,13 +109,26 @@ class Match:
             self.home, self.location = split_args[0], ""
         self.guest = match_args[5]
 
+        valid_roles = ["SR", "SRA1", "SRA2", "BEO", "Pate"]
+        search_for_name = False
         team_args = []
+        current_ref = []
         for a in match_args[7].split("\n"):
             if not "ATS" in a and not "-->" in a and a != "":
-                team_args += [a]
-        assert len(team_args) % 2 == 0
+                if a in valid_roles:
+                    if not search_for_name:
+                        current_ref.append(a)
+                        search_for_name = True
+                        continue
+                    if search_for_name:
+                        current_ref.append("")
+                else:
+                    current_ref.append(a)
+                team_args.append(current_ref)
+                current_ref = []
+                search_for_name = False
 
-        self.team = [Ref(args) for args in zip(team_args[0::2], team_args[1::2], ref_state)]
+        self.team = [Ref(args) for args in zip(team_args, ref_state)]
 
     def __repr__(self):
         return f"{self.date}\n{self.staffel}\n{self.home} v. {self.guest}\n{self.location}\n{self.team}"
