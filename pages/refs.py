@@ -83,14 +83,17 @@ def layout(refs=None):
     valid_refs = []
     user_groups = list_groups()
     ref_whitelist = []
-    for value in get_grouped_users(user_groups).values():
-        ref_whitelist += value
-    ref_whitelist += get_single_users(user_groups)
-    for ref in refs_temp:
-        if ref in ref_whitelist:
-            valid_refs += [ref]
-    if len(valid_refs) == 0:
-        return empty_placeholder
+    if "admin" in user_groups:
+        valid_refs = refs_temp
+    else:
+        for value in get_grouped_users(user_groups).values():
+            ref_whitelist += value
+        ref_whitelist += get_single_users(user_groups)
+        for ref in refs_temp:
+            if ref in ref_whitelist:
+                valid_refs += [ref]
+        if len(valid_refs) == 0:
+            return empty_placeholder
     global session, modified_timestamp
     if session is None or modified_timestamp < datetime.now() - timedelta(minutes=15):
         session = prepare_search_session(username=config["spielplus"]["username"],
