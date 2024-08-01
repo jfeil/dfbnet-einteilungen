@@ -1,0 +1,60 @@
+{
+  "grouped_users": {
+    "GROUP_DISPLAY_NAME": {
+      "group": "group_name",
+      "users": [
+        [
+          "NACHNAME",
+          "VORNAME"
+        ],
+        [
+          "NACHNAME_2",
+          "VORNAME_2"
+        ]
+      ]
+    },
+    "2_GROUP_DISPLAY_NAME": {
+      "group": "group_name_2",
+      "users": [
+        [
+          "NACHNAME",
+          "VORNAME"
+        ],
+        [
+          "NACHNAME_3",
+          "VORNAME_3"
+        ]
+      ]
+    }
+
+  },
+  "auth": {
+    "USERNAME": {
+      "password": "ARGON2_PASSWORD_HASH",
+      "groups": [
+        "group_name",
+        "group_name2",
+        ["NACHNAME", "VORNAME"],
+        ["NACHNAME_2", "VORNAME_2"]
+      ]
+    },
+    "USERNAME2": {
+      "password": "ARGON2_PASSWORD_HASH",
+      "groups": [
+        "group_name",
+        ["NACHNAME_3", "VORNAME_3"]
+      ]
+    },
+    "USERNAME3": {
+      "password": "ARGON2_PASSWORD_HASH",
+      "groups": [
+        ["NACHNAME_4", "VORNAME_4"]
+      ]
+    }
+  },
+  "secret_key": "ENTER_SECRET_KEY",
+  "spielplus": {
+    "username": "DFBNET_USERNAME",
+    "password": "DFBNET_PASSWORD"
+  }
+}
