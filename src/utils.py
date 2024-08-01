@@ -109,7 +109,7 @@ class Match:
             self.home, self.location = split_args[0], ""
         self.guest = match_args[5]
 
-        valid_roles = ["SR", "SRA1", "SRA2", "BEO", "Pate"]
+        valid_roles = ["SR", "SRA1", "SRA2", "BEO", "PA", "4OF"]
         search_for_name = False
         team_args = []
         current_ref = []
