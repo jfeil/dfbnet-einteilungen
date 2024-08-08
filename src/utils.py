@@ -7,7 +7,6 @@ import requests
 from argon2 import PasswordHasher
 from bs4 import BeautifulSoup
 
-
 with open('config.json', 'r') as f:
     config = json.load(f)
 
@@ -31,9 +30,9 @@ def set_password_hash_for_user(user: str, pw_hash: str) -> None:
 
 
 def url_builder(users: List[List[str]], prefix="refs") -> str:
-    args = f"?{prefix}="+"_".join(users[0])
+    args = f"?{prefix}=" + "_".join(users[0])
     for user in users[1:]:
-        args += f"&{prefix}="+"_".join(user)
+        args += f"&{prefix}=" + "_".join(user)
     return args
 
 
@@ -58,6 +57,7 @@ def get_single_users(user_groups):
             continue
         single_user_links += [group]
     return single_user_links
+
 
 def get_ref_req(vorname, nachname, datedelta):
     return {"staffel": "", "msa_id": "0", "status": "4", "date": datetime.today().strftime("%d.%m.%Y"),
@@ -114,17 +114,18 @@ class Match:
         team_args = []
         current_ref = []
         for a in match_args[7].split("\n"):
-            if not "ATS" in a and not "-->" in a and a != "":
+            if "ATS" not in a and "-->" not in a and a != "":
                 if a in valid_roles:
                     if not search_for_name:
-                        current_ref.append(a)
                         search_for_name = True
-                        continue
-                    if search_for_name:
+                    else:
                         current_ref.append("")
+                        team_args.append(current_ref)
+                    current_ref = [a]
+                    continue
                 else:
                     current_ref.append(a)
-                team_args.append(current_ref)
+                    team_args.append(current_ref)
                 current_ref = []
                 search_for_name = False
 
@@ -147,15 +148,23 @@ class Match:
 
 
 def parse_icons(contents):
+    rows = contents.find_all('tr')
     return_list = []
-    for icon in contents:
-        match icon['alt']:
-            case "Ansetzung bestätigt.":
-                return_list += ['✓']
-            case "Ansetzung nicht bestätigt.":
-                return_list += ['❓']
-            case "Vorläufige Einteilung":
-                return_list += ['✘']
+
+    for row in rows:
+        icons = row.find_all('img')
+        if len(icons) == 0:
+            if "ATS" not in row.text:
+                return_list.append("")
+        else:
+            for icon in icons:
+                match icon['alt']:
+                    case "Ansetzung bestätigt.":
+                        return_list += ['✓']
+                    case "Ansetzung nicht bestätigt.":
+                        return_list += ['❓']
+                    case "Vorläufige Einteilung":
+                        return_list += ['✘']
     return return_list
 
 
@@ -173,7 +182,7 @@ def parse_matches(web_page):
                 if el.get_text() == 'Keine Einträge gefunden!':
                     return []
                 elements += [el.get_text("\n").strip().replace("\xa0", "")]
-            matches += [Match(elements, parse_icons(match[-2].find_all('img')))]
+            matches += [Match(elements, parse_icons(match[-2]))]
     except Exception as e:
         print(e)
         print(match)
@@ -187,10 +196,10 @@ def prepare_search_session(username, password):
     x = BeautifulSoup(resp.text, "html.parser")
     auth_webpage = x.find(id="kc-form-login")['action']
     resp = s.post(auth_webpage, data={
-                                        "username": username,
-                                        "password":	password,
-                                        "credentialId":	"",
-                                     })
+        "username": username,
+        "password": password,
+        "credentialId": "",
+    })
     x = BeautifulSoup(resp.text, "html.parser")
     new_link = search_link(x, 'Schiriansetzung')
     resp = s.get(urljoin(base_url, new_link))

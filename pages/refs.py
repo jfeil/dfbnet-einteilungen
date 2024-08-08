@@ -41,8 +41,14 @@ def create_ag_grids(data: Dict[Tuple[str, str] | date, List[Match]]):
             new_row = []
             if not hide_date:
                 new_row += [el.date.strftime('%d.%m.%Y')]
-            new_row += [el.date.strftime('%H:%M'), el.staffel, el.home, el.guest,
-                        "\n".join([f"{t.role}: {t.name} ({t.state})" for t in el.team]), el.location]
+            ref_team = ""
+            for t in el.team:
+                ref_team += t.role
+                if t.name:
+                    ref_team += f": {t.name} ({t.state})"
+                ref_team += "\n"
+
+            new_row += [el.date.strftime('%H:%M'), el.staffel, el.home, el.guest, ref_team, el.location]
             df.loc[i] = new_row
 
         return html.Div(dag.AgGrid(
