@@ -1,0 +1,7 @@
+services:
+  nlz:
+    build: .
+    volumes:
+      - ./config.json:/workdir/config.json
+    restart: always
+    
