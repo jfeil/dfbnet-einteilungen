@@ -5,6 +5,12 @@ name: Create and publish a Docker image
 on:
   push:
     branches: ['main']
+    paths:
+      - '**.py'
+      - 'requirements.txt'
+      - 'Dockerfile'
+  schedule:
+    - cron: '1 3 * * 0'
 
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:

@@ -1,7 +1,6 @@
 services:
   nlz:
-    build: .
+    image: ghcr.io/jfeil/dfbnet-einteilungen:main
     volumes:
       - ./config.json:/workdir/config.json
     restart: always
-    
