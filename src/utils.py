@@ -128,6 +128,9 @@ class Match:
                     team_args.append(current_ref)
                 current_ref = []
                 search_for_name = False
+        if search_for_name:
+            current_ref.append("")
+            team_args.append(current_ref)
 
         self.team = [Ref(args) for args in zip(team_args, ref_state)]
 
