@@ -40,7 +40,7 @@ def create_ag_grids(data: Dict[Tuple[str, str] | date, List[Match]]):
         for i, el in enumerate(data):
             new_row = []
             if not hide_date:
-                new_row += [el.date.strftime('%d.%m.%Y')]
+                new_row += [el.date.strftime('%a, %d.%m')]
             ref_team = ""
             for t in el.team:
                 ref_team += t.role
