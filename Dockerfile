@@ -9,6 +9,7 @@ RUN pip install -r requirements.txt
 COPY main.py /workdir
 COPY src /workdir/src
 COPY pages /workdir/pages
+COPY assets workdir/assets
 
 EXPOSE 8080
 
