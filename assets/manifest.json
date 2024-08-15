@@ -4,10 +4,10 @@
   "dir": "ltr",
   "display": "standalone",
   "name": "DFBnet-Voreinteilungen",
-  "orientation": "any",
-  "scope": "https://nlz.jfeil.de/assets/",
+  "orientation": "landscape",
+  "scope": "https://nlz.jfeil.de/",
   "short_name": "DFBnet-Voreinteilungen",
-  "start_url": "https://nlz.jfeil.de/assets/",
+  "start_url": "https://nlz.jfeil.de/",
   "theme_color": "#000000",
   "icons": [
         {
