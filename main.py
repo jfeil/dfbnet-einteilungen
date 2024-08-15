@@ -83,7 +83,7 @@ def get_user_groups(user):
 
 
 BasicAuth(app, auth_func=check_user, user_groups=get_user_groups,
-          secret_key=config["secret_key"], public_routes=["/", "/hash", "/assets"])
+          secret_key=config["secret_key"], public_routes=["/", "/hash", "/assets/manifest.json", "/assets/sw01.js"])
 
 
 def layout():
@@ -133,6 +133,15 @@ def layout():
         dash.page_container,
         dcc.Location("url_name")
     ])
+
+
+@app.server.route('/assets/manifest.json')
+def serve_manifest():
+    return send_file('manifest.json', mimetype='application/manifest+json')
+
+@app.server.route('/assets/sw01.js')
+def serve_sw():
+    return send_file('sw01.js', mimetype='application/javascript')
 
 
 app.layout = layout
