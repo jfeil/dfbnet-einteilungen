@@ -2,7 +2,7 @@
   "background_color": "#000000",
   "description": "Home",
   "dir": "ltr",
-  "display": "standalone",
+  "display": "fullscreen",
   "name": "DFBnet-Voreinteilungen",
   "orientation": "landscape",
   "scope": "https://nlz.jfeil.de/",
