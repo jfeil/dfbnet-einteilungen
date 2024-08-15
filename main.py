@@ -135,15 +135,6 @@ def layout():
     ])
 
 
-@app.server.route('/assets/manifest.json')
-def serve_manifest():
-    return send_file('manifest.json', mimetype='application/manifest+json')
-
-@app.server.route('/assets/sw01.js')
-def serve_sw():
-    return send_file('sw01.js', mimetype='application/javascript')
-
-
 app.layout = layout
 
 if __name__ == '__main__':
