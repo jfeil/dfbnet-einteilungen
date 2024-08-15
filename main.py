@@ -83,7 +83,7 @@ def get_user_groups(user):
 
 
 BasicAuth(app, auth_func=check_user, user_groups=get_user_groups,
-          secret_key=config["secret_key"], public_routes=["/", "/hash"])
+          secret_key=config["secret_key"], public_routes=["/", "/hash", "/assets"])
 
 
 def layout():
