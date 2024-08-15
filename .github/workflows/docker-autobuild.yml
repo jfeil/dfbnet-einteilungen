@@ -4,11 +4,11 @@ name: Create and publish a Docker image
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
   push:
-    branches: ['main']
     paths:
       - '**.py'
       - 'requirements.txt'
       - 'Dockerfile'
+      - 'assets/*'
   schedule:
     - cron: '1 3 * * 0'
 
