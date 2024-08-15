@@ -1,5 +1,5 @@
 {
-  "background_color": "#ffffff",
+  "background_color": "#000000",
   "description": "Home",
   "dir": "ltr",
   "display": "standalone",
@@ -8,7 +8,7 @@
   "scope": "https://nlz.jfeil.de/assets/",
   "short_name": "DFBnet-Voreinteilungen",
   "start_url": "https://nlz.jfeil.de/assets/",
-  "theme_color": "#ffffff",
+  "theme_color": "#000000",
   "icons": [
         {
       "src": "images/android-launchericon-512-512.png",
