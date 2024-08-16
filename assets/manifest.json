@@ -5,9 +5,9 @@
   "display": "fullscreen",
   "name": "DFBnet-Voreinteilungen",
   "orientation": "landscape",
-  "scope": "https://nlz.jfeil.de/",
+  "scope": ".",
   "short_name": "DFBnet-Voreinteilungen",
-  "start_url": "https://nlz.jfeil.de/",
+  "start_url": ".",
   "theme_color": "#000000",
   "icons": [
         {
