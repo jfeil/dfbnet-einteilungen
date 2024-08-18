@@ -18,7 +18,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY, dbc_css], server=s
 app.index_string = '''<!DOCTYPE html>
 <html>
 <head>
-<title>My app title</title>
+<title>''' + title + '''</title>
 <link rel="manifest" href="./assets/manifest.json" />
 {%metas%}
 {%favicon%}
