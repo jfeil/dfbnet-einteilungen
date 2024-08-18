@@ -46,6 +46,8 @@ def create_ag_grids(data: Dict[Tuple[str, str] | date, List[Match]]):
                 ref_team += t.role
                 if t.name:
                     ref_team += f": {t.name} ({t.state})"
+                if t.atspl:
+                    ref_team += f" [{t.atspl}]"
                 ref_team += "\n"
 
             new_row += [el.date.strftime('%H:%M'), el.staffel, el.home, el.guest, ref_team, el.location]

@@ -76,6 +76,7 @@ class Ref:
         self.role = ref_args[0][0]
         self.name = ref_args[0][1]
         self.state = ref_args[1]
+        self.atspl = ref_args[0][2]
 
     def __repr__(self):
         return f"{self.role}: {self.name} ({self.state})"
@@ -113,23 +114,32 @@ class Match:
         search_for_name = False
         team_args = []
         current_ref = []
+        current_ATSPL = ""
         for a in match_args[7].split("\n"):
-            if "ATS" not in a and "-->" not in a and a != "":
-                if a in valid_roles:
-                    if not search_for_name:
-                        search_for_name = True
-                    else:
-                        current_ref.append("")
-                        team_args.append(current_ref)
-                    current_ref = [a]
-                    continue
+            if "ATS" in a or a == "":
+                continue
+            elif "-->" in a:
+                current_ATSPL = a.replace("-->", "").strip()
+                continue
+            elif a in valid_roles:
+                if not search_for_name:
+                    search_for_name = True
                 else:
-                    current_ref.append(a)
+                    current_ref.append("")
+                    current_ref.append(current_ATSPL)
                     team_args.append(current_ref)
-                current_ref = []
-                search_for_name = False
+                current_ref = [a]
+                current_ATSPL = ""
+                continue
+            else:
+                current_ref.append(a)
+                current_ref.append(current_ATSPL)
+                team_args.append(current_ref)
+            current_ref = []
+            search_for_name = False
         if search_for_name:
             current_ref.append("")
+            current_ref.append(current_ATSPL)
             team_args.append(current_ref)
 
         self.team = [Ref(args) for args in zip(team_args, ref_state)]
