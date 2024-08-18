@@ -2,7 +2,9 @@ import dash
 from dash import html
 from dash_auth import list_groups
 
-dash.register_page(__name__, path='/')
+from src.utils import title
+
+dash.register_page(__name__, path='/', title=title)
 
 
 def get_layout():

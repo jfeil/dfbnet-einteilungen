@@ -8,7 +8,7 @@ import flask
 from dash_auth import BasicAuth, list_groups
 
 from src.utils import config, get_password_hash_for_user, hasher, \
-    set_password_hash_for_user, url_builder, get_grouped_users, get_single_users
+    set_password_hash_for_user, url_builder, get_grouped_users, get_single_users, title
 
 server = flask.Flask(__name__)  # define flask app.server
 dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
@@ -126,7 +126,7 @@ def layout():
     return dbc.Container([
         dbc.NavbarSimple(
             children=children,
-            brand="Voreinteilungen 👀",
+            brand=title,
             brand_href="/",
             color="primary",
             dark=True,

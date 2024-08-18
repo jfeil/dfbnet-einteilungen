@@ -6,11 +6,11 @@ import dash
 from dash import html, callback, Output, Input
 from dash_auth import protected_callback, list_groups
 
-from src.utils import prepare_search_session, search_ref, Match, config, get_grouped_users, get_single_users
+from src.utils import prepare_search_session, search_ref, Match, config, get_grouped_users, get_single_users, title
 import dash_ag_grid as dag
 import pandas as pd
 
-dash.register_page(__name__)
+dash.register_page(__name__, title=title)
 
 session = None
 modified_timestamp = -1

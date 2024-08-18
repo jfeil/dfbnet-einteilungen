@@ -7,6 +7,9 @@ import requests
 from argon2 import PasswordHasher
 from bs4 import BeautifulSoup
 
+
+title = "Voreinteilungen 👀"
+
 with open('config.json', 'r') as f:
     config = json.load(f)
 
