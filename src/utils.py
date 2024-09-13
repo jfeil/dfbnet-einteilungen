@@ -176,7 +176,7 @@ def parse_icons(contents):
             for icon in icons:
                 match icon['alt']:
                     case "Ansetzung bestätigt.":
-                        return_list += ['✓']
+                        return_list += ['✅']
                     case "Ansetzung nicht bestätigt.":
                         return_list += ['❓']
                     case "Vorläufige Einteilung":
