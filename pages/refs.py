@@ -65,6 +65,7 @@ def create_ag_grids(data: Dict[Tuple[str, str] | date, List[Match]]):
         if isinstance(key, date):
             title = key.strftime('%a, %d.%m.%Y')
             hide_date = True
+            data[key] = sorted(data[key], key=lambda x: x.date)
         elif isinstance(key, Tuple):
             title = " ".join(key)
             hide_date = False
