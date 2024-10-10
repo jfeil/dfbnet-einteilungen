@@ -40,7 +40,8 @@ def url_builder(users: List[List[str]], prefix="refs") -> str:
 
 
 base_url = "https://www.dfbnet.org"
-dfbnet_login = "https://www.dfbnet.org/spielplus/oauth/login?submit=Anmelden"
+dfbnet_landing = "https://www.dfbnet.org/spielplus/login.do"
+dfbnet_login = "https://www.dfbnet.org/spielplus/oauth/login"
 search = "https://www.dfbnet.org/sria/mod_sria/offenespielelist.do?reqCode=view"
 
 
@@ -207,7 +208,7 @@ def parse_matches(web_page):
 
 def prepare_search_session(username, password):
     s = requests.Session()
-
+    s.get(dfbnet_landing)
     resp = s.get(dfbnet_login)
     x = BeautifulSoup(resp.text, "html.parser")
     auth_webpage = x.find(id="kc-form-login")['action']
