@@ -15,7 +15,7 @@ from pptx import Presentation
 
 title = "Voreinteilungen 👀"
 
-with open('config.json', 'r') as f:
+with open("config.json", "r") as f:
     config = json.load(f)
 
 hasher = PasswordHasher()
@@ -24,7 +24,7 @@ logging.basicConfig(level=logging.ERROR, format="%(levelname)s: %(message)s")
 def validate_template_structure(config):
     logging.info("Starting template structure validation.")
 
-    # Check if 'template' exists
+    # Check if "template" exists
     if "template" not in config:
         logging.error("'template' key is missing in config.")
         return False
@@ -66,7 +66,7 @@ template = validate_template_structure(config)
 
 
 def update_config():
-    with open('config.json', 'w') as f:
+    with open("config.json", "w") as f:
         json.dump(config, f)
 
 
@@ -99,7 +99,7 @@ def get_grouped_users(user_groups):
     for key in config["grouped_users"]:
         if config["grouped_users"][key]["group"] not in user_groups:
             continue
-        group_links[key] = config['grouped_users'][key]["users"]
+        group_links[key] = config["grouped_users"][key]["users"]
     return group_links
 
 
@@ -118,9 +118,9 @@ def get_ref_req(vorname, nachname, datedelta):
 
 
 def search_link(web_content, keyword):
-    for el in web_content.find_all('a'):
+    for el in web_content.find_all("a"):
         if el.text == keyword:
-            return el['href']
+            return el["href"]
     return None
 
 
@@ -252,23 +252,23 @@ class Match:
 
 
 def parse_icons(contents):
-    rows = contents.find_all('tr')
+    rows = contents.find_all("tr")
     return_list = []
 
     for row in rows:
-        icons = row.find_all('img')
+        icons = row.find_all("img")
         if len(icons) == 0:
             if "ATS" not in row.text:
                 return_list.append("")
         else:
             for icon in icons:
-                match icon['alt']:
+                match icon["alt"]:
                     case "Ansetzung bestätigt.":
-                        return_list += ['✅']
+                        return_list += ["✅"]
                     case "Ansetzung nicht bestätigt.":
-                        return_list += ['❓']
+                        return_list += ["❓"]
                     case "Vorläufige Einteilung":
-                        return_list += ['✘']
+                        return_list += ["✘"]
     return return_list
 
 
@@ -277,13 +277,13 @@ def parse_matches(web_page):
     try:
         matches = []
 
-        table = web_page.find('table', attrs={"class": "sportView"})
+        table = web_page.find("table", attrs={"class": "sportView"})
         rows = table.find_all("tr", recursive=False)[1:]
         for row in rows:
             elements = []
             match = row.find_all("td", recursive=False)
             for el in match:
-                if el.get_text() == 'Keine Einträge gefunden!':
+                if el.get_text() == "Keine Einträge gefunden!":
                     return []
                 elements += [el.get_text("\n").strip().replace("\xa0", "")]
             matches += [Match(elements, parse_icons(match[-2]))]
@@ -298,17 +298,17 @@ def prepare_search_session(username, password):
     s.get(dfbnet_landing)
     resp = s.get(dfbnet_login)
     x = BeautifulSoup(resp.text, "html.parser")
-    auth_webpage = x.find(id="kc-form-login")['action']
+    auth_webpage = x.find(id="kc-form-login")["action"]
     resp = s.post(auth_webpage, data={
         "username": username,
         "password": password,
         "credentialId": "",
     })
     x = BeautifulSoup(resp.text, "html.parser")
-    new_link = search_link(x, 'Schiriansetzung')
+    new_link = search_link(x, "Schiriansetzung")
     resp = s.get(urljoin(base_url, new_link))
     x = BeautifulSoup(resp.text, "html.parser")
-    new_link = search_link(x, 'Ansetzung')
+    new_link = search_link(x, "Ansetzung")
     s.get(urljoin(base_url, new_link))
     return s
 

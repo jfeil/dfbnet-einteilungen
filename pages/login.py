@@ -8,8 +8,8 @@ layout = dbc.Container([])
 
 
 @callback(
-        Output('url_name', 'pathname'),
-        Input('url_name', 'pathname'))
+        Output("url_name", "pathname"),
+        Input("url_name", "pathname"))
 def login(current_url):
     if current_url == "/login":
         return "/"
