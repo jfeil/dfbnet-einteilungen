@@ -1,4 +1,6 @@
 import json
+import logging
+import os.path
 from datetime import datetime
 from typing import List
 from urllib.parse import urljoin
@@ -14,6 +16,48 @@ with open('config.json', 'r') as f:
     config = json.load(f)
 
 hasher = PasswordHasher()
+logging.basicConfig(level=logging.ERROR, format="%(levelname)s: %(message)s")
+def validate_template_structure(config):
+    logging.info("Starting template structure validation.")
+
+    # Check if 'template' exists
+    if "template" not in config:
+        logging.error("'template' key is missing in config.")
+        return False
+    logging.info("'template' key found.")
+
+    # Check for required keys in 'template'
+    required_keys = ["path", "id_template_ref-team", "id_template_ref-single",
+                     "template_ref-team_mapping", "template_ref-single_mapping"]
+
+    for key in required_keys:
+        if key not in config["template"]:
+            logging.error(f"Required key '{key}' is missing in 'template' config.")
+            return False
+        logging.info(f"'{key}' key found in 'template' config.")
+
+    # Check if 'league_mapping' exists (optional)
+    if "league_mapping" in config["template"]:
+        logging.info("'league_mapping' key found (optional).")
+    else:
+        logging.info("'league_mapping' key is missing but optional.")
+
+    # Validate the 'path' contains a valid .pptx file
+    path = config["template"]["path"]
+    if not os.path.exists(path):
+        logging.error(f"Path '{path}' does not exist.")
+        return False
+    if not os.path.isfile(path):
+        logging.error(f"Path '{path}' is not a file.")
+        return False
+    if not path.lower().endswith(".pptx"):
+        logging.error(f"Path '{path}' is not a PowerPoint (.pptx) file.")
+        return False
+
+    logging.info(f"PowerPoint (.pptx) file found at '{path}'.")
+    logging.info("Template structure validation successful. Download is enabled.")
+    return True
+template = validate_template_structure(config)
 
 
 def update_config():
@@ -162,6 +206,33 @@ class Match:
 
     def __hash__(self):
         return hash((self.date, self.staffel, self.home, self.location, self.guest, self.team))
+
+    def create_powerpoint_output(self):
+        ref = ""
+        sra1 = ""
+        sra2 = ""
+
+        for r in self.team:
+            if r.role == "SR":
+                ref = r.name
+            elif r.role == "SRA1":
+                sra1 = r.name
+            elif r.role == "SRA2":
+                sra2 = r.name
+            else:
+                pass
+
+        return [
+            self.date.strftime("%d.%m.%Y"),
+            self.date.strftime("%H:%M"),
+            self.location,
+            self.home,
+            self.guest,
+            self.staffel,
+            ref,
+            sra1,
+            sra2
+        ]
 
 
 def parse_icons(contents):

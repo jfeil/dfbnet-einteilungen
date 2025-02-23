@@ -5,8 +5,10 @@ from typing import Dict, List, Tuple
 import dash
 from dash import html, callback, Output, Input
 from dash_auth import protected_callback, list_groups
+import dash_bootstrap_components as dbc
 
-from src.utils import prepare_search_session, search_ref, Match, config, get_grouped_users, get_single_users, title
+from src.utils import prepare_search_session, search_ref, Match, config, get_grouped_users, get_single_users, title, \
+    template
 import dash_ag_grid as dag
 import pandas as pd
 
@@ -72,7 +74,14 @@ def create_ag_grids(data: Dict[Tuple[str, str] | date, List[Match]]):
         else:
             raise ValueError(f"Unexpected key type: {type(key)}")
         content.append(html.Br())
-        content.append(html.H3(title))
+        heading = html.H3(title)
+        heading_div = html.Div([heading], style={"display": "flex"})
+        if template:
+            button_download = dbc.Button("Download", outline=True, color="primary", style={"margin": "auto"})
+            heading_div.children += [button_download]
+        else:
+            pass
+        content.append(heading_div)
         content.append(list_to_grid(data[key], hide_date))
     return content
 
@@ -126,7 +135,8 @@ def layout(refs=None):
 
     return html.Div([
         content_names,
-        content_dates
+        content_dates,
+        html.Br()
     ])
 
 
