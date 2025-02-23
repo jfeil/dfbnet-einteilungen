@@ -232,7 +232,7 @@ class Match:
                 pass
 
         if "league_mapping" in config["template"] and self.staffel in config["template"]["league_mapping"]:
-            staffel_name = config["template"]["league_mapping"][self.staffel]
+            staffel_name = config["template"]["league_mapping"][self.staffel].upper()
         else:
             staffel_name = self.staffel
 
