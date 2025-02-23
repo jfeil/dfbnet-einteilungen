@@ -1,3 +1,4 @@
+import io
 import json
 import logging
 import os.path
@@ -5,10 +6,12 @@ from datetime import datetime
 from typing import List
 from urllib.parse import urljoin
 
+import dash
 import requests
 from argon2 import PasswordHasher
 from bs4 import BeautifulSoup
-
+from dash import dcc
+from pptx import Presentation
 
 title = "Voreinteilungen 👀"
 
@@ -17,6 +20,7 @@ with open('config.json', 'r') as f:
 
 hasher = PasswordHasher()
 logging.basicConfig(level=logging.ERROR, format="%(levelname)s: %(message)s")
+
 def validate_template_structure(config):
     logging.info("Starting template structure validation.")
 
@@ -55,6 +59,7 @@ def validate_template_structure(config):
         return False
 
     logging.info(f"PowerPoint (.pptx) file found at '{path}'.")
+
     logging.info("Template structure validation successful. Download is enabled.")
     return True
 template = validate_template_structure(config)
@@ -208,31 +213,42 @@ class Match:
         return hash((self.date, self.staffel, self.home, self.location, self.guest, self.team))
 
     def create_powerpoint_output(self):
-        ref = ""
-        sra1 = ""
-        sra2 = ""
+        ref = None
+        sra1 = None
+        sra2 = None
 
         for r in self.team:
+            if not r.name:
+                continue
+            name_split = r.name.split()
+            name = " ".join(name_split[:-1]) + "\n" + name_split[-1]
             if r.role == "SR":
-                ref = r.name
+                ref = name
             elif r.role == "SRA1":
-                sra1 = r.name
+                sra1 = name
             elif r.role == "SRA2":
-                sra2 = r.name
+                sra2 = name
             else:
                 pass
 
-        return [
+        if "league_mapping" in config["template"] and self.staffel in config["template"]["league_mapping"]:
+            staffel_name = config["template"]["league_mapping"][self.staffel]
+        else:
+            staffel_name = self.staffel
+
+        return_values = [
             self.date.strftime("%d.%m.%Y"),
             self.date.strftime("%H:%M"),
             self.location,
-            self.home,
-            self.guest,
-            self.staffel,
+            self.home.upper(),
+            self.guest.upper(),
+            staffel_name,
             ref,
-            sra1,
-            sra2
         ]
+        if sra1 or sra2:
+            return_values += [sra1, sra2]
+
+        return return_values
 
 
 def parse_icons(contents):
@@ -301,3 +317,35 @@ def search_ref(session, nachname, vorname):
     resp = session.post(search, data=get_ref_req(nachname=nachname, vorname=vorname, datedelta=999))
     x = BeautifulSoup(resp.text, "html.parser")
     return parse_matches(x)
+
+
+def create_instagram_template(data):
+    if not template:
+        return dash.no_update
+    prs = Presentation(config["template"]["path"])
+    layout_3_refs = config["template"]["id_template_ref-team"]
+    layout_1_refs = config["template"]["id_template_ref-single"]
+
+    lookup_table_3 = {x: i for i, x in enumerate(config["template"]["template_ref-team_mapping"].values())}
+    lookup_table_1 = {x: i for i, x in enumerate(config["template"]["template_ref-single_mapping"].values())}
+
+    for match in data:
+        if len(match) == 9:
+            # 3 refs
+            lookup_table = lookup_table_3
+            slide_layout = prs.slide_layouts[layout_3_refs]
+        elif len(match) == 7:
+            # 1 refs
+            lookup_table = lookup_table_1
+            slide_layout = prs.slide_layouts[layout_1_refs]
+        else:
+            logging.error("Invalid input!")
+            return dash.no_update
+        slide = prs.slides.add_slide(slide_layout)
+        for i, shape in enumerate(slide.placeholders):
+            if i not in lookup_table:
+                continue
+            shape.text = match[lookup_table[i]]
+    io_buffer = io.BytesIO()
+    prs.save(io_buffer)
+    return dcc.send_bytes(io_buffer.getvalue(), "matchday.pptx")
