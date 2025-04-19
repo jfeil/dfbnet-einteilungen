@@ -12,6 +12,7 @@ from argon2 import PasswordHasher
 from bs4 import BeautifulSoup
 from dash import dcc
 from pptx import Presentation
+from pptx.shapes.placeholder import PicturePlaceholder, SlidePlaceholder
 
 title = "Voreinteilungen 👀"
 
@@ -214,20 +215,27 @@ class Match:
 
     def create_powerpoint_output(self):
         ref = None
+        ref_image = None
         sra1 = None
+        sra1_image = None
         sra2 = None
+        sra2_image = None
 
         for r in self.team:
             if not r.name:
                 continue
             name_split = r.name.split()
             name = " ".join(name_split[:-1]) + "\n" + name_split[-1]
+            image_name = ("_".join(name_split[::-1]) + ".png")
             if r.role == "SR":
                 ref = name
+                ref_image = image_name
             elif r.role == "SRA1":
                 sra1 = name
+                sra1_image = image_name
             elif r.role == "SRA2":
                 sra2 = name
+                sra2_image = image_name
             else:
                 pass
 
@@ -244,9 +252,10 @@ class Match:
             self.guest.upper(),
             staffel_name,
             ref,
+            ref_image
         ]
         if sra1 or sra2:
-            return_values += [sra1, sra2]
+            return_values += [sra1, sra1_image, sra2, sra2_image]
 
         return return_values
 
@@ -330,11 +339,11 @@ def create_instagram_template(data):
     lookup_table_1 = {x: i for i, x in enumerate(config["template"]["template_ref-single_mapping"].values())}
 
     for match in data:
-        if len(match) == 9:
+        if len(match) == 12:
             # 3 refs
             lookup_table = lookup_table_3
             slide_layout = prs.slide_layouts[layout_3_refs]
-        elif len(match) == 7:
+        elif len(match) == 8:
             # 1 refs
             lookup_table = lookup_table_1
             slide_layout = prs.slide_layouts[layout_1_refs]
@@ -345,7 +354,15 @@ def create_instagram_template(data):
         for i, shape in enumerate(slide.placeholders):
             if i not in lookup_table:
                 continue
-            shape.text = match[lookup_table[i]]
+            if type(shape) == PicturePlaceholder:
+                path = os.path.join(os.curdir, config["template"]["image_path"], match[lookup_table[i]])
+                if os.path.exists(path) and os.path.isfile(path):
+                    pic = shape.insert_picture(path)
+                    if pic.crop_top != 0.0:
+                        pic.crop_bottom += pic.crop_top
+                        pic.crop_top = 0.0
+            elif type(shape) == SlidePlaceholder:
+                shape.text = match[lookup_table[i]]
     io_buffer = io.BytesIO()
     prs.save(io_buffer)
     return dcc.send_bytes(io_buffer.getvalue(), "matchday.pptx")
