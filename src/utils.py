@@ -2,6 +2,7 @@ import io
 import json
 import logging
 import os.path
+import shutil
 from datetime import datetime
 from typing import List
 from urllib.parse import urljoin
@@ -64,6 +65,12 @@ def validate_template_structure(config):
     logging.info("Template structure validation successful. Download is enabled.")
     return True
 template = validate_template_structure(config)
+
+# apt-get install libreoffice-impress
+pdf_convert = shutil.which("libreoffice") is not None
+
+# apt-get install poppler-utils
+jpg_convert = shutil.which("pdftoppm") is not None
 
 
 def update_config():
@@ -328,7 +335,7 @@ def search_ref(session, nachname, vorname):
     return parse_matches(x)
 
 
-def create_instagram_template(data):
+def create_instagram_template(data, output_buffer):
     if not template:
         return dash.no_update
     prs = Presentation(config["template"]["path"])
@@ -363,6 +370,4 @@ def create_instagram_template(data):
                         pic.crop_top = 0.0
             elif type(shape) == SlidePlaceholder:
                 shape.text = match[lookup_table[i]]
-    io_buffer = io.BytesIO()
-    prs.save(io_buffer)
-    return dcc.send_bytes(io_buffer.getvalue(), "matchday.pptx")
+    prs.save(output_buffer)

@@ -1,6 +1,12 @@
+import glob
+import io
+import os.path
+import subprocess
+import tempfile
 from collections import defaultdict
 from datetime import datetime, timedelta, date
 from typing import Dict, List, Tuple
+from zipfile import ZipFile
 
 import dash
 from dash import html, Output, Input, dcc, State, ALL
@@ -8,7 +14,7 @@ from dash_auth import protected_callback, list_groups
 import dash_bootstrap_components as dbc
 
 from src.utils import prepare_search_session, search_ref, Match, config, get_grouped_users, get_single_users, title, \
-    template, create_instagram_template
+    template, create_instagram_template, pdf_convert, jpg_convert
 import dash_ag_grid as dag
 import pandas as pd
 
@@ -79,10 +85,22 @@ def create_ag_grids(data: Dict[Tuple[str, str] | date, List[Match]], id, hidden)
         heading = html.H3(title)
         heading_div = html.Div([heading], style={"display": "flex", "align-items": "center"})
         if template:
-            button_download = dbc.Button("Download", id={"type": "download-instagram-button", "index": index},
-                                         outline=True, color="primary", style={"margin-left": "auto"})
+            if pdf_convert:
+                dropdown_download = dbc.DropdownMenu(
+                    [
+                        dbc.DropdownMenuItem(".PPTX", id={"type": "download-instagram-button", "index": index}),
+                        dbc.DropdownMenuItem(".PDF", id={"type": "download-instagram-button-pdf", "index": index}),
+                    ],
+                    label="Download", color="primary", style={"margin-left": "auto"})
+                if jpg_convert:
+                    dropdown_download.children += [dbc.DropdownMenuItem(".JPG", id={"type": "download-instagram-button-jpg", "index": index}),
+]
+                heading_div.children += [dropdown_download]
+            else:
+                button_download = dbc.Button("Download", id={"type": "download-instagram-button", "index": index},
+                                             outline=True, color="primary", style={"margin-left": "auto"})
+                heading_div.children += [button_download]
             download_data.append([x.create_powerpoint_output() for x in current_data])
-            heading_div.children += [button_download]
         else:
             # Template config is not valid
             pass
@@ -157,15 +175,61 @@ def toggle_mode(value):
 
 
 @protected_callback(
-    Output("download-instagram-template", "data"),
+    Output("download-instagram-template", "data", allow_duplicate=True),
     State("download-instagram-data", "data"),
     State("tables-name", "hidden"),
     Input({"type": "download-instagram-button", "index": ALL}, "n_clicks"),
-    prevent_initial_callback=True
+    prevent_initial_call=True
 )
 def download_instagram_template(data, index_data, _):
     if not dash.ctx.triggered_id:
         return dash.no_update
     clicked_idx = dash.ctx.triggered_id["index"]
-    download_data = create_instagram_template(data[index_data][clicked_idx])
-    return download_data
+    data_buffer = io.BytesIO()
+    create_instagram_template(data[index_data][clicked_idx], data_buffer)
+    return dcc.send_bytes(data_buffer.getvalue(), "matchday.pptx")
+
+
+def create_pdf(data, dir_):
+    pptx_file = os.path.join(dir_, "matchday.pptx")
+    print(dir_)
+    data_buffer = io.FileIO(pptx_file, "x")
+    create_instagram_template(data, data_buffer)
+    subprocess.run(["libreoffice", "--convert-to", "pdf", "matchday.pptx"], cwd=dir_)
+
+
+@protected_callback(
+    Output("download-instagram-template", "data", allow_duplicate=True),
+    State("download-instagram-data", "data"),
+    State("tables-name", "hidden"),
+    Input({"type": "download-instagram-button-pdf", "index": ALL}, "n_clicks"),
+    prevent_initial_call=True
+)
+def download_instagram_template_pdf(data, index_data, _):
+    if not dash.ctx.triggered_id:
+        return dash.no_update
+    clicked_idx = dash.ctx.triggered_id["index"]
+    with tempfile.TemporaryDirectory() as dir_:
+        create_pdf(data[index_data][clicked_idx], dir_)
+        return dcc.send_file(os.path.join(dir_, "matchday.pdf"), "matchday.pdf")
+
+
+@protected_callback(
+    Output("download-instagram-template", "data", allow_duplicate=True),
+    State("download-instagram-data", "data"),
+    State("tables-name", "hidden"),
+    Input({"type": "download-instagram-button-jpg", "index": ALL}, "n_clicks"),
+    prevent_initial_call=True
+)
+def download_instagram_template_jpg(data, index_data, _):
+    if not dash.ctx.triggered_id:
+        return dash.no_update
+    clicked_idx = dash.ctx.triggered_id["index"]
+    with tempfile.TemporaryDirectory() as dir_:
+        create_pdf(data[index_data][clicked_idx], dir_)
+        subprocess.run(["pdftoppm", "-jpeg", "matchday.pdf", "matchday"], cwd=dir_)
+        with ZipFile(os.path.join(dir_, 'matchday.zip'), 'w') as myzip:
+            for file in glob.glob(os.path.join(dir_, "matchday-*.jpg")):
+                path, name = os.path.split(file)
+                myzip.write(file, name)
+        return dcc.send_file(os.path.join(dir_, "matchday.zip"), "matchday.zip")

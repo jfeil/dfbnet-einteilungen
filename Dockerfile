@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-install-project --no-dev
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install  -y --no-install-recommends libreoffice-impress
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install  -y --no-install-recommends libreoffice-impress poppler-utils
 
 # Then, add the rest of the project source code and install it
 # Installing separately from its dependencies allows optimal layer caching
