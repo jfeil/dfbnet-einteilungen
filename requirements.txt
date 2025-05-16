@@ -159,9 +159,9 @@ markupsafe==3.0.2 \
     # via
     #   jinja2
     #   werkzeug
-narwhals==1.35.0 \
-    --hash=sha256:07477d18487fbc940243b69818a177ed7119b737910a8a254fb67688b48a7c96 \
-    --hash=sha256:7562af132fa3f8aaaf34dc96d7ec95bdca29d1c795e8fcf14e01edf1d32122bc
+narwhals==1.39.1 \
+    --hash=sha256:68d0f29c760f1a9419ada537f35f21ff202b0be1419e6d22135a0352c6d96deb \
+    --hash=sha256:cf15389e6f8c5321e8cd0ca8b5bace3b1aea5f5622fa59dfd64821998741d836
     # via plotly
 nest-asyncio==1.6.0 \
     --hash=sha256:6f172d5449aca15afd6c646851f4e31e02c598d553a667e38cafa997cfec55fe \
