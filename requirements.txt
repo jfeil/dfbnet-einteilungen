@@ -68,9 +68,9 @@ colorama==0.4.6 ; sys_platform == 'win32' \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
     # via click
-dash==3.0.3 \
-    --hash=sha256:86d3038ae9f09e1f246937afbab5451c9db5a3832911c325d2e1f0bcefe2b7c9 \
-    --hash=sha256:9c6577e056971590c002c07fd26376d3d501bddb39804466e401876fb1e043ac
+dash==3.0.4 \
+    --hash=sha256:177f8c3d1fa45555b18f2f670808eba7803c72a6b1cd6fd172fd538aca18eb1d \
+    --hash=sha256:4f9e62e9d8c5cd1b42dc6d6dcf211fe9498195f73ef0edb62a26e2a1b952a368
     # via
     #   dash-ag-grid
     #   dash-auth
