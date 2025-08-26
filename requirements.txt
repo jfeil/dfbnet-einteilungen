@@ -88,9 +88,9 @@ dash-bootstrap-components==2.0.1 \
     --hash=sha256:3cc6586f37cb3fcc04bc72d3801c07b792040066a2cc78d2330885529265ec28 \
     --hash=sha256:e598fc47f8fb1622eec5b06ccbfec3be9a0ed8ee4405c35bcf3c2c54b74f80c5
     # via dfbnet-einteilungen
-flask==3.0.3 \
-    --hash=sha256:34e815dfaa43340d1d15a5c3a02b8476004037eb4840b34910c6e21679d288f3 \
-    --hash=sha256:ceb27b0af3823ea2737928a4d99d125a06175b8512c445cbd9a9ce200ef76842
+flask==3.1.2 \
+    --hash=sha256:bf656c15c80190ed628ad08cdfd3aaa35beb087855e2f494910aa3774cc4fd87 \
+    --hash=sha256:ca1d8112ec8a6158cc29ea4858963350011b5c846a414cdb7a954aa9e967d03c
     # via
     #   dash
     #   dash-auth
